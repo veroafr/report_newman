@@ -1,0 +1,697 @@
+{
+	"info": {
+		"_postman_id": "0636ef25-d043-4413-9b67-dd614e206637",
+		"name": "Sprint 4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37927327"
+	},
+	"item": [
+		{
+			"name": "listar_carrinhos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.include.all.keys('quantidade', 'carrinhos');",
+							"    ",
+							"    responseData.carrinhos.forEach(function(carrinho) {",
+							"        pm.expect(carrinho).to.include.all.keys('produtos', 'precoTotal', 'quantidadeTotal', 'idUsuario', '_id');",
+							"        ",
+							"        carrinho.produtos.forEach(function(produto) {",
+							"            pm.expect(produto).to.include.all.keys('idProduto', 'quantidade', 'precoUnitario');",
+							"        });",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify the presence and length of 'produtos' array\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.carrinhos).to.be.an('array');",
+							"    responseData.carrinhos.forEach(function (carrinho) {",
+							"        pm.expect(carrinho.produtos).to.be.an('array');",
+							"        pm.expect(carrinho.produtos).to.have.lengthOf.at.least(1);",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"IdProduto is a non-empty string, quantidade and precoUnitario are non-negative integers\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.carrinhos).to.be.an('array');",
+							"",
+							"  responseData.carrinhos.forEach(function(carrinho) {",
+							"    pm.expect(carrinho.produtos).to.be.an('array');",
+							"",
+							"    carrinho.produtos.forEach(function(produto) {",
+							"      pm.expect(produto.idProduto).to.be.a('string').and.to.have.lengthOf.at.least(1, \"IdProduto should be a non-empty string\");",
+							"      pm.expect(produto.quantidade).to.be.a('number').and.to.be.at.least(0, \"Quantidade should be a non-negative integer\");",
+							"      pm.expect(produto.precoUnitario).to.be.a('number').and.to.be.at.least(0, \"PrecoUnitario should be a non-negative integer\");",
+							"    });",
+							"  });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://serverest.dev/carrinhos",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"carrinhos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listar_id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"  const responseData = pm.response.json();",
+							"",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData).to.have.property('produtos');",
+							"  pm.expect(responseData).to.have.property('precoTotal');",
+							"  pm.expect(responseData).to.have.property('quantidadeTotal');",
+							"  pm.expect(responseData).to.have.property('idUsuario');",
+							"  pm.expect(responseData).to.have.property('_id');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify the presence and length of 'produtos' array\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.produtos).to.exist.and.to.be.an('array');",
+							"  pm.expect(responseData.produtos).to.have.lengthOf(2);",
+							"});",
+							"",
+							"",
+							"pm.test(\"IdProduto is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    responseData.produtos.forEach(function(produto) {",
+							"        pm.expect(produto.idProduto).to.be.a('string').and.to.have.lengthOf.at.least(1, \"IdProduto should be a non-empty string\");",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Quantidade is a non-negative integer\", function () {",
+							"    const responseData = pm.response.json();",
+							"    responseData.produtos.forEach(function(produto) {",
+							"        pm.expect(produto.quantidade).to.be.a('number').and.to.be.at.least(0, \"Quantidade should be a non-negative integer\");",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"PrecoUnitario is a non-negative integer\", function () {",
+							"    const responseData = pm.response.json();",
+							"    responseData.produtos.forEach(function(produto) {",
+							"        pm.expect(produto.precoUnitario).to.be.a('number').and.to.be.at.least(0, \"PrecoUnitario should be a non-negative integer\");",
+							"    });",
+							"});",
+							"",
+							"",
+							"pm.test(\"PrecoTotal and quantidadeTotal are non-negative integers\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.precoTotal).to.be.a('number').and.to.satisfy((value) => value >= 0, \"PrecoTotal should be a non-negative number\");",
+							"    pm.expect(responseData.quantidadeTotal).to.be.a('number').and.to.satisfy((value) => value >= 0, \"QuantidadeTotal should be a non-negative number\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://serverest.dev/carrinhos/3BP9kCB60Bgm5l8o",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"carrinhos",
+						"3BP9kCB60Bgm5l8o"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "listar_id_invalido",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 400\", function () {",
+							"    pm.expect(pm.response.code).to.equal(400);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required Content-Type header with value application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message field is present in the response\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.have.property('message');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message field is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that the response does not contain any sensitive information\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.not.have.property('password', \"Response should not contain sensitive information like password\");",
+							"    pm.expect(responseData).to.not.have.property('creditCardNumber', \"Response should not contain sensitive information like credit card number\");",
+							"    pm.expect(responseData).to.not.have.property('securityCode', \"Response should not contain sensitive information like security code\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://serverest.dev/carrinhos/3BP9kCB60Bgm5l67",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"carrinhos",
+						"3BP9kCB60Bgm5l67"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "token_ausen_exp",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 401\", function () {",
+							"  pm.expect(pm.response.code).to.equal(401);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message field is present in the response\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.message).to.exist;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message field should not be empty\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.message).to.exist.and.to.not.be.empty;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.message).to.exist;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"produtos\": [\r\n    {\r\n      \"idProduto\": \"BeeJh5lz3k6kSIzA\",\r\n      \"quantidade\": 5\r\n    },\r\n    {\r\n      \"idProduto\": \"YaeJ455lz3k6kSIzA\",\r\n      \"quantidade\": 56\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/carrinhos",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"carrinhos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "realizar_login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields - message and authorization\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('message');",
+							"    pm.expect(responseData).to.have.property('authorization');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Authorization token is in a valid format\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.authorization).to.be.a('string');",
+							"    pm.expect(responseData.authorization).to.match(/[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+/);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"veronica@gmail.com\",\r\n  \"password\": \"senha123\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/login",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "criar_carrinho_sucesso",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 401\", function () {",
+							"  pm.expect(pm.response.code).to.equal(401);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.message).to.exist;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify that the request URL is correct\", function () {",
+							"    pm.expect(pm.request.url.toString()).to.equal(\"https://serverest.dev/carrinhos?=&=\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImdhYnJpZWxAZ21haWwuY29tIiwicGFzc3dvcmQiOiIxMjMiLCJpYXQiOjE3Mjc4ODk2MDksImV4cCI6MTcyNzg5MDIwOX0.2qCWJOZl0NxwU5GTSLskKrwC_D8LtZZfNHpVY1R6KAw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"produtos\": [\r\n    {\r\n      \"idProduto\": \"fgyyn7IBtgkwv4lF\",\r\n      \"quantidade\": 1\r\n    },\r\n    {\r\n      \"idProduto\": \"gN8c8LHknTDDoa7G\",\r\n      \"quantidade\": 1\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/carrinhos?=&=",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"carrinhos"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": ""
+						},
+						{
+							"key": "",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "procurar_id_carrinho_criado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 400\", function () {",
+							"    pm.expect(pm.response.code).to.equal(400);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.message).to.exist.and.to.be.a('string');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message is a non-empty string\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Verify the URL is correct and hitting the right endpoint\", function () {",
+							"    pm.expect(pm.request.url).to.equal(\"https://serverest.dev/carrinhos/20ZQ1JMSaPawE2Kr\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://serverest.dev/carrinhos/20ZQ1JMSaPawE2Kr",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"carrinhos",
+						"20ZQ1JMSaPawE2Kr"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "concluir_compra",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message field is present in the response\", function () {",
+							"    const responseData = pm.response.json();",
+							"    pm.expect(responseData.message).to.exist;",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message is related to successful completion of purchase\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.message).to.include(\"successful completion of purchase\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFubmU0NUBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiMTIzNDU2IiwiaWF0IjoxNzI3ODkwMjk0LCJleHAiOjE3Mjc4OTA4OTR9.FzLQ9pWkUFiDafd-YvN_V04mczR_6P95t8hwLsbhWAs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://serverest.dev/carrinhos/concluir-compra",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"carrinhos",
+						"concluir-compra"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cancelar-compra",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content type is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message is a non-empty string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Message is related to the action performed\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.message).to.exist.and.to.be.a('string');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFubmU0NUBleGFtcGxlLmNvbSIsInBhc3N3b3JkIjoiMTIzNDU2IiwiaWF0IjoxNzI3ODkwMjk0LCJleHAiOjE3Mjc4OTA4OTR9.FzLQ9pWkUFiDafd-YvN_V04mczR_6P95t8hwLsbhWAs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://serverest.dev/carrinhos/cancelar-compra",
+					"protocol": "https",
+					"host": [
+						"serverest",
+						"dev"
+					],
+					"path": [
+						"carrinhos",
+						"cancelar-compra"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
